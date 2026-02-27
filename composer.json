@@ -1,0 +1,33 @@
+{
+    "name": "budgetcontrol/mailer",
+    "description": "The MailerService library provides functionality for sending emails. It is used by the BC (Business Communication) module of the application.",
+    "type": "package",
+    "license": "AGPL",
+    "repositories": {
+        "source": {
+            "type": "vcs",
+            "url": "https://github.com/mlabfactory/phpunit-self-api-integration.git"
+        }
+    },
+    "require": {
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "nikic/php-parser": "^5.0",
+        "fakerphp/faker": "^1.23",
+        "phpunit/phpunit": "^10.0",
+        "mlabfactory/phpunit-self-api-integration": "^v1.1-beta"
+    },
+    "autoload": {
+        "psr-4": {
+            "BudgetcontrolLibs\\NAME\\": "libs/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Marco De Felice",
+            "email": "marco.defelice@mlabfactory.it"
+        }
+    ],
+    "minimum-stability": "stable"
+}
