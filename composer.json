@@ -1,26 +1,26 @@
 {
-    "name": "budgetcontrol/mailer",
-    "description": "The MailerService library provides functionality for sending emails. It is used by the BC (Business Communication) module of the application.",
+    "name": "budgetcontrol/elasticsearch",
+    "description": "A library to manage elasticsearch queries and results in a more efficient way",
     "type": "package",
     "license": "AGPL",
     "repositories": {
-        "source": {
-            "type": "vcs",
-            "url": "https://github.com/mlabfactory/phpunit-self-api-integration.git"
+        "budgetcontrol/cryptable" : {
+            "type":"vcs",
+            "url":"git@github.com:BudgetControl/LibsCryptable.git"
+        },
+        "budgetcontrol/library" : {
+            "type":"vcs",
+            "url":"https://github.com/BudgetControl/Library.git"
         }
     },
     "require": {
-        "php": "^8.1"
-    },
-    "require-dev": {
-        "nikic/php-parser": "^5.0",
-        "fakerphp/faker": "^1.23",
-        "phpunit/phpunit": "^10.0",
-        "mlabfactory/phpunit-self-api-integration": "^v1.1-beta"
+        "php": "^8.1",
+        "elasticsearch/elasticsearch": "~8.19",
+        "budgetcontrol/library": "~1.4.6"
     },
     "autoload": {
         "psr-4": {
-            "BudgetcontrolLibs\\NAME\\": "libs/"
+            "BudgetcontrolLibs\\ElasticSearch\\": "libs/"
         }
     },
     "authors": [
@@ -29,5 +29,13 @@
             "email": "marco.defelice@mlabfactory.it"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "scripts": {
+        "echo-env": "echo 'ELASTICSEARCH_INDEX=index-name' && echo 'ELASTICSEARCH_HOST=host-name' && echo 'ELASTICSEARCH_USERNAME=elastic' && echo 'ELASTICSEARCH_PASSWORD=the-password'"
+    }
 }
