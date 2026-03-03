@@ -93,9 +93,9 @@ final class ElasticAggregator
     }
 
     // Terms aggregations (group by)
-    public function groupBy(string $field, int $size = 1000, string $name = null, array $subAggs = []): self
+    public function groupBy(string $field, int $size = 1000, int $categoryId = null, array $subAggs = []): self
     {
-        $name = $name ?: "group_by_{$field}";
+        $id = $categoryId ?: "group_by_{$field}";
         
         $aggregation = [
             'terms' => [
@@ -109,11 +109,35 @@ final class ElasticAggregator
             $aggregation['aggs'] = $subAggs;
         }
 
-        $this->aggregations[$name] = $aggregation;
+        $this->aggregations[$categoryId] = $aggregation;
         return $this;
     }
 
-    public function groupByCategory(int $size = 1000, string $name = 'by_category'): self
+    /**
+     * Groups the Elasticsearch aggregation results by tag field.
+     * 
+     * This method configures the aggregation to group documents based on their tag values,
+     * allowing for statistical analysis and data segmentation by tag categories.
+     *
+     * @return self Returns the current ElasticAggregator instance for method chaining
+     */
+    public function groupByTag(): self
+    {
+        $this->type = 'byTag';
+        return $this->groupBy('labels.name.keyword', 1000, 'by_tag');
+    }
+
+    /**
+     * Groups Elasticsearch results by category field using terms aggregation.
+     * 
+     * This method creates a terms aggregation that groups documents by their category
+     * field, allowing for analysis of data distribution across different categories.
+     *
+     * @param int $size The maximum number of category buckets to return (default: 1000)
+     * @param int $categoryId The name identifier for this aggregation (default: 'by_category')
+     * @return self Returns the current instance for method chaining
+     */
+    public function groupByCategory(int $size = 1000, ?int $categoryId = null): self
     {
         $this->type = 'byCategory';
         $subAggs = [
@@ -137,7 +161,7 @@ final class ElasticAggregator
             ]
         ];
 
-        return $this->groupBy('category_id', $size, $name, $subAggs);
+        return $this->groupBy('category_id', $size, $categoryId, $subAggs);
     }
 
     public function groupByWallet(int $size = 1000, string $name = 'by_wallet'): self

@@ -14,6 +14,31 @@ class AggregationTransactions implements JsonSerializable
         $this->aggregations = $data;
     }
 
+    public static function byTag(array $data): array
+    {
+        $aggregations = [];
+        foreach ($data['by_tag']['buckets'] as $bucket) {
+            $object = new \stdClass();
+            $object->category_name = $bucket['name']['buckets'][0]['key'] ?? null;
+            $object->label_id = $bucket['id']['buckets'][0]['key'] ?? null;
+            $object->total = $bucket['total_amount']['value'] ?? null;
+
+            $aggregations[] = new self($object);
+        }
+
+        return $aggregations;
+    }
+
+    public static function sumByField(array $data): array
+    {
+        $aggregations = [];
+        $object = new \stdClass();
+        $object->total = $data['total_amount']['value'] ?? 0.0;
+        $aggregations[] = new self($object);
+
+        return $aggregations;
+    }
+
     public function aggregations(): \stdClass
     {
         return $this->aggregations;
@@ -31,7 +56,7 @@ class AggregationTransactions implements JsonSerializable
     public static function byCategory(array $data): array
     {
         $aggregations = [];
-        foreach($data['by_category']['buckets'] as $bucket) {
+        foreach ($data['by_category']['buckets'] as $bucket) {
             $object = new \stdClass();
             $object->category_slug = $bucket['category_slug']['buckets'][0]['key'] ?? null;
             $object->category_name = $bucket['category_name']['buckets'][0]['key'] ?? null;

@@ -18,15 +18,10 @@ class Search extends ElasticSearchService
      * @param array|ElasticFilter $filters Array of search criteria or ElasticFilter object
      * @param int $from Starting offset for pagination (default: 0)
      * @param int $size Number of results to return (default: 50)
-     * @return array Array containing total count and EntryTransaction objects
+     * @return ElasticFilter containing total count and EntryTransaction objects
      */
-    public function search(array|ElasticFilter $filters, int $from = 0, int $size = 50): array
+    public function search(ElasticFilter $filters, int $from = 0, int $size = 50): array
     {
-        // Converti array in ElasticFilter se necessario
-        if (is_array($filters)) {
-            $filters = ElasticFilter::fromArray($filters);
-        }
-
         $params = [
             'index' => $this->index,
             'body' => [
