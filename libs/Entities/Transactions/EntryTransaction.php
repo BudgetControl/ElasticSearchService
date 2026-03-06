@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace BudgetcontrolLibs\ElasticSearch\Entities\Transactions;
 
 use Budgetcontrol\Library\Model\Currency;
-use Budgetcontrol\Library\Model\Entry;
 use Budgetcontrol\Library\Model\EntryInterface;
 use Budgetcontrol\Library\Model\Payee;
 use Budgetcontrol\Library\Model\PaymentType;
@@ -76,7 +75,7 @@ class EntryTransaction implements JsonSerializable, TransactionInterface
         'updated_at'
     ];
 
-    public function __construct(Entry|array $data)
+    public function __construct(EntryInterface|array $data)
     {
         if(is_array($data)) {
             $this->hydrateFromElastic($data);

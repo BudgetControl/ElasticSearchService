@@ -12,10 +12,8 @@ class ElasticSearchClient
     public readonly string $indexName;
     public readonly Client $client;
 
-    private function __construct(string $indexName, string $host, string $username, string $password)
+    private function __construct(string $host, string $username, string $password)
     {
-        $this->indexName = $indexName;
-
         $this->client = ClientBuilder::create()
             ->setHosts([$host])
             ->setBasicAuthentication($username, $password)
@@ -33,7 +31,7 @@ class ElasticSearchClient
         return $this->indexName;
     }
     
-    public function changeIndexName(string $indexName): void
+    public function setIndexName(string $indexName): void
     {
         $this->indexName = $indexName;
     }

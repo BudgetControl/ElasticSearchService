@@ -3,6 +3,8 @@ declare(strict_types=1);
 namespace BudgetcontrolLibs\ElasticSearch\Services\Transactions;
 
 use Budgetcontrol\Library\Model\Entry;
+use Budgetcontrol\Library\Model\EntryInterface;
+use Budgetcontrol\Library\Model\Wallet;
 use BudgetcontrolLibs\ElasticSearch\Entities\Transactions\EntryTransaction;
 use BudgetcontrolLibs\ElasticSearch\Services\ElasticSearchService;
 use Elastic\Elasticsearch\Exception\ElasticsearchException;
@@ -84,12 +86,61 @@ class Indexer extends ElasticSearchService
      * This method transforms an Entry object into a structured array format
      * that can be used for search indexing or data storage operations.
      *
-     * @param Entry $entry The entry object to be converted to array format
+     * @param EntryInterface $entry The entry object to be converted to array format
      * @return array The structured array representation of the entry
      */
-    protected function buildEntry(Entry $entry): array
+    protected function buildEntry(EntryInterface $entry): array
     {
         $transaction = new EntryTransaction($entry);
         return $transaction->toArray();
+    }
+
+    /**
+     * Indexes a wallet document in Elasticsearch.
+     *
+     * This method takes a Wallet object and creates or updates its corresponding
+     * document in the Elasticsearch index. The wallet data will be processed and
+     * stored in a format suitable for search and aggregation operations.
+     *
+     * @param Collection $wallet The wallet object to be indexed in Elasticsearch
+     * @return void
+     * @throws \Exception If the indexing operation fails or Elasticsearch is unavailable
+     */
+    public function bulkIndexWallets(Collection $wallets): void
+    {
+        $params = ['body' => []];
+
+        foreach ($wallets as $wallet) {
+            if(!$wallet instanceof Wallet) {
+                Log::warning("Is not a Wallet instance", ['wallet' => $wallet]);
+                continue; // Skip if it's not an instance of Wallet
+            }
+
+            $params['body'][] = [
+                'index' => [
+                    '_index' => $this->index,
+                ],
+            ];
+
+            $params['body'][] = $this->buildEntry($wallet);
+
+        }
+        
+        
+        try {
+            $response = $this->client->bulk($params);
+            $isError = $response['errors'] ?? false;
+
+            if ($isError) {
+                Log::error('Bulk indexing of wallets encountered errors', ['response' => $response]);
+                throw new ServerResponseException('Bulk indexing of wallets failed with errors');
+            } else {
+                Log::info('Bulk indexing of wallets completed successfully', ['response' => $response]);
+            }
+        } catch (ElasticsearchException $e) {
+            Log::error('Elasticsearch exception during bulk indexing of wallets', ['error' => $e->getMessage()]);
+            throw $e;
+        }
+
     }
 }
