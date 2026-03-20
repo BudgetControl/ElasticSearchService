@@ -1,44 +1,56 @@
-# library Mailer
+# ElasticSearchService
 
-The library Mailer is a software development kit (library) package designed to provide a convenient and efficient way to integrate email functionality into budget control applications.
+ElasticSearchService è un package PHP progettato per fornire un'integrazione semplice ed efficiente con Elasticsearch per applicazioni di controllo del budget.
 
-## Features
+## Caratteristiche
 
-- **Easy Integration**: The library Mailer offers a simple and straightforward integration process, allowing developers to quickly incorporate email sending capabilities into their applications.
+- **Integrazione Facile**: Il package offre un processo di integrazione semplice e diretto, permettendo agli sviluppatori di incorporare rapidamente le funzionalità di ricerca e indicizzazione Elasticsearch nelle loro applicazioni.
 
-- **Flexible Configuration**: With the library Mailer, you have the flexibility to configure various email settings, such as the SMTP server, port, authentication credentials, and more.
+- **Configurazione Flessibile**: Con ElasticSearchService, hai la flessibilità di configurare varie impostazioni di Elasticsearch, come host, porta, credenziali di autenticazione e indicizzazione.
 
-- **Multiple Email Providers**: The library  supports popular email providers, including Gmail, Outlook, and SendGrid, ensuring compatibility with a wide range of email services.
+- **Gestione Transazioni**: Il package supporta l'indicizzazione e la ricerca di transazioni finanziarie con supporto per aggregazioni e statistiche avanzate.
 
-- **Template Support**: Simplify your email creation process by utilizing pre-defined email templates. The library Mailer provides a template engine that allows you to customize and personalize your emails effortlessly.
+- **Ricerca in Linguaggio Naturale**: Implementa funzionalità di ricerca avanzata che permettono di interrogare i dati utilizzando un linguaggio naturale.
 
-## Getting Started
+## Componenti Principali
 
-To get started with the library Mailer, follow these steps:
+### Client
+- **ElasticSearchClient**: Client principale per la comunicazione con Elasticsearch
 
-1. Install the library Mailer package using your preferred package manager:
+### Servizi
+- **ElasticSearchService**: Servizio principale per la gestione delle operazioni Elasticsearch
+- **Indexer**: Gestisce l'indicizzazione dei documenti
+- **Search**: Fornisce funzionalità di ricerca avanzata
+- **NaturalLanguageSearch**: Implementa la ricerca in linguaggio naturale
+- **FinanceStats**: Gestisce le statistiche finanziarie
 
-## Example
-``
-$data = [
-    "name" => "name"
-];
-$bodyemail = new Mail($data);
-$attachment = [
-    [
-        'path' => ...,
-        'name' => ...
-    ]
-];
+### Entità
+- **TransactionInterface**: Interfaccia per le transazioni
+- **EntryTransaction**: Gestione delle transazioni di entrata
+- **WalletTransaction**: Gestione delle transazioni del portafoglio
 
-$dsn = new Dsn(env('MAIL_SCHEME', 'mailhog'), env('MAIL_HOST', 'mailhog'), '', '');
-$mailer = new EmailService($dsn);
-$mailer->sendEmail(
-    $to,
-    $subject,
-    $bodyemail,
-    $attachment,
-    $cc
-);
+## Installazione
 
-``
+Installa il package utilizzando Composer:
+
+```bash
+composer require budgetcontrol/elasticsearch-service
+```
+
+## Esempio d'Uso
+
+```php
+use BudgetControl\ElasticSearchService\Services\ElasticSearchService;
+use BudgetControl\ElasticSearchService\Services\Clients\ElasticSearchClient;
+
+// Inizializzazione del client
+$client = new ElasticSearchClient($host, $port, $username, $password);
+$elasticService = new ElasticSearchService($client);
+
+// Indicizzazione di una transazione
+$transaction = new EntryTransaction($data);
+$elasticService->indexTransaction($transaction);
+
+// Ricerca delle transazioni
+$results = $elasticService->searchTransactions($query, $filters);
+```
